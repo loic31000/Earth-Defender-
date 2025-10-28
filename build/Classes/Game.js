@@ -1,6 +1,7 @@
 import { GameObject } from "./GameObject/GameObject.js";
 import { Player } from "./GameObject/Player.js";
 import { Input } from "./Input.js";
+import { Alien } from "./GameObject/Alien.js";
 var Game = /** @class */ (function () {
     // initialisation
     function Game() {
@@ -22,6 +23,8 @@ var Game = /** @class */ (function () {
         this.draw(this.player);
         Input.listen();
         this.loop();
+        this.alien = new Alien(this);
+        this.draw(this.alien);
     };
     Game.prototype.draw = function (gameObject) {
         this.context.drawImage(gameObject.getImage(), gameObject.getPosition().x, gameObject.getPosition().y, gameObject.getImage().width, gameObject.getImage().height);
@@ -30,11 +33,14 @@ var Game = /** @class */ (function () {
         var _this = this;
         setInterval(function () {
             console.log("Frame!");
+            // Clear context
             _this.context.clearRect(0, 0, _this.CANVAS_WIDTH, _this.CANVAS_HEIGHT);
             _this.context.fillStyle = "#141414";
             _this.context.fillRect(0, 0, _this.CANVAS_WIDTH, _this.CANVAS_HEIGHT);
-            _this.draw(_this.player);
             _this.player.callUpdate();
+            _this.draw(_this.player);
+            _this.alien.callUpdate();
+            _this.draw(_this.alien);
         }, 10);
     };
     return Game;

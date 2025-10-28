@@ -1,6 +1,7 @@
 import { GameObject } from "./GameObject/GameObject.js";
 import { Player } from "./GameObject/Player.js";
 import { Input } from "./Input.js";
+import { Alien } from "./GameObject/Alien.js"
 
 export class Game {
   // Déclaration d'une classe exportable nommée Game
@@ -9,6 +10,7 @@ export class Game {
   private context: CanvasRenderingContext2D; // Stocke le contexte de dessin 2D du canvas
   public readonly CANVAS_WIDTH: number = 900; // Largeur fixe du canvas en pixels
   public readonly CANVAS_HEIGHT: number = 600; // Hauteur fixe du canvas en pixels
+  private alien: Alien;
 
   // initialisation
   constructor() {
@@ -32,6 +34,8 @@ export class Game {
     this.draw(this.player);
     Input.listen();
     this.loop();
+    this.alien = new Alien(this);
+    this.draw(this.alien);
   }
 
   private draw(gameObject: GameObject) {
@@ -43,17 +47,20 @@ export class Game {
       gameObject.getImage().height
     );
   }
-  private loop() {
-    setInterval(() => {
-      console.log("Frame!");
-      this.context.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
-      this.context.fillStyle = "#141414";
-      this.context.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
+    private loop(){
+        setInterval(()=>{
+            console.log("Frame!");
+            // Clear context
+            this.context.clearRect(0,0,this.CANVAS_WIDTH,this.CANVAS_HEIGHT);
+            this.context.fillStyle = "#141414";
+            this.context.fillRect(0,0,this.CANVAS_WIDTH,this.CANVAS_HEIGHT);
 
+            this.player.callUpdate();
+            this.draw(this.player);
+            
+            this.alien.callUpdate();
+            this.draw(this.alien);
 
-      this.draw(this.player);
-
-      this.player.callUpdate()
-    }, 10);
-  }
+        },10); 
+    }
 }
