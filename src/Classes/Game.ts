@@ -1,121 +1,121 @@
-import { GameObject } from "./GameObject/GameObject.js"; // Importation de la classe GameObject depuis son fichier
-import { Player } from "./GameObject/Player.js"; // Importation de la classe Player depuis son fichier
-import { Input } from "./Input.js"; // Importation du module Input pour gérer les entrées utilisateur
-import { Alien } from "./GameObject/Alien.js"; // Importation de la classe Alien depuis son fichier
+import { GameObject } from "./GameObject/GameObject.js"; // Importe la classe GameObject
+import { Player } from "./GameObject/Player.js"; // Importe la classe Player (héritée de GameObject)
+import { Input } from "./Input.js"; // Importe le module Input pour gérer les entrées utilisateur (clavier/souris)
+import { Alien } from "./GameObject/Alien.js"; // Importe la classe Alien (héritée de GameObject)
 // import { Assets } from "./Assets.js";
-import { Star } from "./GameObject/Star.js";
+import { Star } from "./GameObject/Star.js"; // Importe la classe Star (héritée de GameObject)
 
 export class Game {
-  // Déclaration d'une classe exportable nommée Game
+  // Déclaration de la classe principale Game
 
-  // Attributs
-  private context: CanvasRenderingContext2D; // Stocke le contexte de dessin 2D du canvas
+  // Attributs principaux
+  private context: CanvasRenderingContext2D; // Contexte 2D pour dessiner sur le canvas HTML
   public readonly CANVAS_WIDTH: number = 900; // Largeur fixe du canvas en pixels
   public readonly CANVAS_HEIGHT: number = 600; // Hauteur fixe du canvas en pixels
-  private player: Player; // Variable pour stocker l'instance du joueur
-  private alien: Alien; // Variable pour stocker une instance d'alien (utilisée ici pour un alien générique)
-  private nbAliens: number = 10; // Nombre d'aliens à instancier
-  private star: Star; // Nombre de star a instancier;
-  private nbStars: number = 100;
+  private player: Player; // Instance du joueur
+  private alien: Alien; // Instance d'un alien générique
+  private nbAliens: number = 10; // Nombre d’aliens à créer dans le jeu
+  private star: Star; // Instance d'une star générique
+  private nbStars: number = 100; // Nombre de stars à créer
 
-  // Tableaux
-  private gameObject: GameObject[] = []; // Tableau contenant tous les objets de type GameObject du jeu
+  // Tableau pour stocker tous les GameObjects du jeu
+  private gameObject: GameObject[] = [];
 
-  // Constructeur appelé lors de la création d'une nouvelle instance de Game
+  // Constructeur de la classe Game
   constructor() {
-    const canvas: HTMLCanvasElement = document.querySelector("canvas"); // Sélectionne l'élément <canvas> dans le DOM
-    canvas.width = this.CANVAS_WIDTH; // Définit la largeur du canvas dans le DOM
-    canvas.height = this.CANVAS_HEIGHT; // Définit la hauteur du canvas dans le DOM
-    this.context = canvas.getContext("2d"); // Récupère le contexte 2D pour dessiner sur le canvas
+    const canvas: HTMLCanvasElement = document.querySelector("canvas"); // Sélectionne la balise canvas du DOM
+    canvas.width = this.CANVAS_WIDTH; // Définit la largeur du canvas
+    canvas.height = this.CANVAS_HEIGHT; // Définit la hauteur du canvas
+    this.context = canvas.getContext("2d"); // Récupère le contexte de dessin 2D du canvas
   }
 
+  // Méthode pour démarrer le jeu et initialiser objets & affichage
   public start(): void {
-    // Méthode pour initialiser le dessin et démarrer le jeu
+    // Nettoie la zone du canvas (avant début du jeu)
+    this.context.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
+    this.context.fillStyle = "#141414"; // Choisit une couleur de fond (gris foncé)
+    this.context.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT); // Remplit le canvas avec cette couleur
 
-    this.context.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT); // Efface toute la zone du canvas (nettoyage initial)
-    this.context.fillStyle = "#141414"; // Définit la couleur de remplissage (gris foncé)
-    this.context.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT); // Remplit tout le canvas avec la couleur définie
+    const gameObject = new GameObject(this); // Crée un GameObject générique
+    this.player = new Player(this); // Crée le joueur
 
-    const gameObject = new GameObject(this); // Création d'un objet générique du jeu
-    this.player = new Player(this); // Création de l'objet joueur
-
-    this.draw(gameObject); // Dessine l'objet générique
+    this.draw(gameObject); // Dessine le GameObject générique
     this.draw(this.player); // Dessine le joueur
-    Input.listen(); // Active l'écoute des entrées utilisateur (clavier/souris)
-    this.loop(); // Lance la boucle principale du jeu (mise à jour & dessin en continu)
-    this.alien = new Alien(this); // Création d'un objet alien générique
-    this.draw(this.alien); // Dessine l'alien créé
-    this.star = new Star(this); // Création d'un objet star générique
-    this.draw(this.star); // Dessine la star créé
+    Input.listen(); // Active la gestion des entrées clavier / souris
+    this.loop(); // Lance la boucle principale du jeu (mise à jour et dessin répétés)
+    
+    this.alien = new Alien(this); // Crée un alien générique
+    this.draw(this.alien); // Dessine l'alien
+    this.star = new Star(this); // Crée une star générique
+    this.draw(this.star); // Dessine la star
 
-    this.instanciate(this.player); // Ajoute le joueur au tableau des objets du jeu
+    this.instanciate(this.player); // Ajoute le joueur au tableau des GameObjects
 
-    // Boucle pour instancier et ajouter plusieurs aliens au jeu
+    // Ajoute plusieurs aliens dans le tableau via une boucle
     for (let i = 0; i < this.nbAliens; i++) {
-      this.instanciate(new Alien(this)); // Crée un nouvel alien et l'ajoute au tableau gameObject
+      this.instanciate(new Alien(this)); // Crée et ajoute un alien
     }
 
+    // Ajoute plusieurs stars dans le tableau via une boucle
     for (let i = 0; i < this.nbStars; i++) {
-      this.instanciate(new Star(this));
+      this.instanciate(new Star(this)); // Crée et ajoute une star
     }
   }
 
-  // Méthode publique pour ajouter un objet GameObject au tableau des objets du jeu
+  // Méthode publique pour ajouter un GameObject au tableau gameObject
   public instanciate(gameObject: GameObject): void {
-    this.gameObject.push(gameObject); // Ajoute le gameObject dans le tableau
+    this.gameObject.push(gameObject); // Ajoute le GameObject au tableau
   }
 
-  // Méthode privée pour dessiner un objet du jeu sur le canvas
+  // Méthode privée pour dessiner un GameObject sur le canvas
   private draw(gameObject: GameObject) {
     this.context.drawImage(
-      gameObject.getImage(), // Récupère l'image à dessiner pour cet objet
-      gameObject.getPosition().x, // Coordonnée x de la position de l'objet
-      gameObject.getPosition().y, // Coordonnée y de la position de l'objet
-      gameObject.getImage().width, // Largeur de l'image à dessiner
-      gameObject.getImage().height // Hauteur de l'image à dessiner
+      gameObject.getImage(), // Récupère l'image associée au GameObject
+      gameObject.getPosition().x, // Coordonnée x où dessiner
+      gameObject.getPosition().y, // Coordonnée y où dessiner
+      gameObject.getImage().width, // Largeur de l'image
+      gameObject.getImage().height // Hauteur de l'image
     );
   }
 
-  public over() : void{
-      alert("GameOver!")
-      window.location.reload();
+  // Méthode publique qui affiche une alerte "GameOver" et recharge la page
+  public over(): void {
+      alert("GameOver!"); // Affiche un message à l'utilisateur
+      window.location.reload(); // Recharge la page web pour redémarrer le jeu
   }
-  // Boucle principale du jeu, exécutée toutes les 10 millisecondes
+
+  // Boucle principale du jeu appelée toutes les 10 millisecondes (~100 fois par seconde)
   private loop() {
     setInterval(() => {
-      console.log("Frame!"); // Affiche "Frame!" dans la console à chaque itération (utile pour debug)
+      console.log("Frame!"); // Affiche "Frame!" dans la console pour debug
 
-      // Nettoyage du canvas avant redessin
-      this.context.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT); // Efface tout le canvas
-      this.context.fillStyle = "#141414"; // Réapplique la couleur de fond
-      this.context.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT); // Remplit le canvas avec la couleur de fond
+      // Nettoyage du canvas avant de redessiner tous les objets
+      this.context.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
+      this.context.fillStyle = "#141414"; // Applique la couleur de fond
+      this.context.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT); // Remplit le canvas
 
       this.player.callUpdate(); // Met à jour la logique du joueur (position, état, etc.)
-      this.draw(this.player); // Dessine le joueur mis à jour
+      this.draw(this.player); // Dessine le joueur après mise à jour
 
-      this.alien.callUpdate(); // Met à jour la logique d'un alien générique
-      this.draw(this.alien); // Dessine cet alien
+      this.alien.callUpdate(); // Met à jour la logique de l’alien générique
+      this.draw(this.alien); // Dessine l'alien
 
-      this.star.callUpdate(); // Met à jour la logique d'une star générique
-      this.draw(this.star);
+      this.star.callUpdate(); // Met à jour la logique de la star générique
+      this.draw(this.star); // Dessine la star
 
-        this.gameObject.forEach(go=>{
-            go.callUpdate();
-            this.draw(go);
-            
+      // Pour chaque GameObject dans gameObject
+      this.gameObject.forEach(go => {
+        go.callUpdate(); // Mise à jour de son état / position
+        this.draw(go); // Dessine l'objet après mise à jour
 
-
-
-            this.gameObject.forEach(other=>{
-                // +
-                // Si le gameObject chevauche un gameObject qui n'est pas lui-même
-                if(other != go && go.overlap(other)){
-                    console.log("Deux GameObject différents se touchent");
-                    go.callCollide(other); // J'appelle la méthode collide de mon GameObject
-                }
-            })
-        })
-    },10); 
+        // Pour chaque autre GameObject, teste si ils se chevauchent et ne sont pas le même objet
+        this.gameObject.forEach(other => {
+          if (other != go && go.overlap(other)) {
+            console.log("Deux GameObject différents se touchent"); // Message debug
+            go.callCollide(other); // Appelle la méthode de collision du GameObject
+          }
+        });
+      });
+    }, 10);
   }
 }
-
