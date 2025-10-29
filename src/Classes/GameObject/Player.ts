@@ -1,7 +1,7 @@
 import { GameObject } from "./GameObject.js"; // Importation de la classe de base GameObject
 import { Input } from "../Input.js"; // Importation du module Input pour gérer les entrées utilisateur
 import { Assets } from "../Assets.js"; // Importation du module Assets pour accéder aux images
-import { Laser } from "./Laser.js"; // Importation du module Laser 
+import { Laser } from "./Laser.js"; // Importation du module Laser
 
 export class Player extends GameObject {
   public lastShootTime: number = Date.now();
@@ -21,9 +21,13 @@ export class Player extends GameObject {
 
   protected update(): void {
     // Méthode appelée à chaque frame pour mettre à jour la position du joueur
-
+    let newX = this.getPosition().x + this.speed * Input.getAxisX();
+    newX = Math.max(
+      0,
+      Math.min(newX, this.getGame().CANVAS_WIDTH - this.getImage().width)
+    );
     this.setPosition({
-      x: (this.getPosition().x += this.speed * Input.getAxisX()), // Change la position horizontale en fonction de la vitesse et de l'entrée utilisateur (gauche/droite)
+      x: newX,
       y: this.getPosition().y, // Maintient la position verticale inchangée (le joueur bouge uniquement horizontalement)
     });
 

@@ -15,30 +15,35 @@ var __extends = (this && this.__extends) || (function () {
 })();
 import { Assets } from "../Assets.js";
 import { GameObject } from "./GameObject.js";
+import { Alien } from "./Alien.js";
 var Earth = /** @class */ (function (_super) {
     __extends(Earth, _super);
     function Earth() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.health = 3;
+        return _this;
     }
+    Earth.prototype.getHealth = function () {
+        return this.health;
+    };
     Earth.prototype.start = function () {
-        // Définit l'image de la Terre
         this.setImage(Assets.getEarthImage());
-        // Modifie la largeur de l'image pour remplir tout le bas du canvas
-        this.getImage().width = this.getGame().CANVAS_WIDTH;
-        this.getImage().height = 80; // Par exemple, fixe une hauteur raisonnable pour la Terre
-        // Place la Terre bien en bas du canvas
+        this.getImage().width = this.getGame().CANVAS_WIDTH; // couvre toute la largeur du canvas
+        this.getImage().height = 80; // taille fixe
         this.setPosition({
-            x: 0, // Commence tout à gauche du canvas
-            y: this.getGame().CANVAS_HEIGHT - this.getImage().height // Place en bas
+            x: 0,
+            y: this.getGame().CANVAS_HEIGHT - this.getImage().height
         });
     };
     Earth.prototype.collide = function (other) {
-        // Méthode appelée lors d'une collision avec un autre GameObject
-        // if (other instanceof Player) { // Si l'objet en collision est un joueur
-        //   console.log("1 PV en moins!!!"); // Message dans la console pour debug/collision détectée
-        //   this.getGame().over(); // Appelle la méthode "game over" du jeu, pour signaler la fin de la partie
-        //   window.location.reload(); // Recharge la page pour redémarrer le jeu (optionnel dans collide, car déjà appelé dans over())
-        // }
+        if (other instanceof Alien) {
+            this.health = Math.max(0, this.health - 1);
+            console.log("Terre touch\u00E9e, PV restant : ".concat(this.health));
+            this.getGame().destroy(other);
+            if (this.health === 0) {
+                this.getGame().over();
+            }
+        }
     };
     return Earth;
 }(GameObject));

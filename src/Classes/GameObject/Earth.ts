@@ -1,30 +1,33 @@
 import { Assets } from "../Assets.js";
 import { GameObject } from "./GameObject.js";
-import { Player } from "./Player.js";
+import { Alien } from "./Alien.js";
 
 export class Earth extends GameObject {
+  private health: number = 3; 
 
-protected start(): void {
-    // Définit l'image de la Terre
+  public getHealth(): number {
+    return this.health;
+  }
+
+  protected start(): void {
     this.setImage(Assets.getEarthImage());
+    this.getImage().width = this.getGame().CANVAS_WIDTH; // couvre toute la largeur du canvas
+    this.getImage().height = 80; // taille fixe
 
-    // Modifie la largeur de l'image pour remplir tout le bas du canvas
-    this.getImage().width = this.getGame().CANVAS_WIDTH;
-    this.getImage().height = 80; // Par exemple, fixe une hauteur raisonnable pour la Terre
-
-    // Place la Terre bien en bas du canvas
-    this.setPosition({
-      x: 0, // Commence tout à gauche du canvas
-      y: this.getGame().CANVAS_HEIGHT - this.getImage().height // Place en bas
+    this.setPosition({ 
+      x: 0,
+      y: this.getGame().CANVAS_HEIGHT - this.getImage().height
     });
-   }
-     protected collide(other: GameObject): void {
-    // Méthode appelée lors d'une collision avec un autre GameObject
+  }
 
-    // if (other instanceof Player) { // Si l'objet en collision est un joueur
-    //   console.log("1 PV en moins!!!"); // Message dans la console pour debug/collision détectée
-    //   this.getGame().over(); // Appelle la méthode "game over" du jeu, pour signaler la fin de la partie
-    //   window.location.reload(); // Recharge la page pour redémarrer le jeu (optionnel dans collide, car déjà appelé dans over())
-    // }
+  protected collide(other: GameObject): void {
+    if (other instanceof Alien) {
+      this.health = Math.max(0, this.health - 1);
+      console.log(`Terre touchée, PV restant : ${this.health}`);
+      this.getGame().destroy(other);
+      if (this.health === 0) {
+        this.getGame().over();
+      }
+    }
   }
 }

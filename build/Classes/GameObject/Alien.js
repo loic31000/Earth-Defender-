@@ -33,16 +33,22 @@ var Alien = /** @class */ (function (_super) {
         });
     };
     Alien.prototype.update = function () {
-        // Méthode appelée à chaque mise à jour du jeu (boucle de jeu)
+        var newY = this.getPosition().y + this.speed;
+        var newX = this.getPosition().x;
+        if (newY > this.getGame().CANVAS_HEIGHT - this.getImage().height) {
+            newY = this.getGame().CANVAS_HEIGHT - this.getImage().height;
+        }
+        newX = Math.max(0, Math.min(newX, this.getGame().CANVAS_WIDTH - this.getImage().width));
         // Fait descendre l'alien vers le bas du canvas en augmentant sa coordonnée y selon sa vitesse
         this.setPosition({
-            x: this.getPosition().x, // Garde la même position horizontale
-            y: (this.getPosition().y += this.speed), // Ajoute la vitesse à la position verticale pour faire descendre l'alien
+            x: newX,
+            y: newY, // Ajoute la vitesse à la position verticale pour faire descendre l'alien
         });
     };
     Alien.prototype.collide = function (other) {
         // Méthode appelée lors d'une collision avec un autre GameObject
-        if (other instanceof Player) { // Si l'objet en collision est un joueur
+        if (other instanceof Player) {
+            // Si l'objet en collision est un joueur
             console.log("Miam Miam !"); // Message dans la console pour debug/collision détectée
             this.getGame().over(); // Appelle la méthode "game over" du jeu, pour signaler la fin de la partie
             window.location.reload(); // Recharge la page pour redémarrer le jeu (optionnel dans collide, car déjà appelé dans over())
