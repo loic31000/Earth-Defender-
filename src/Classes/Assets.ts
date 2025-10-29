@@ -1,5 +1,5 @@
 export class Assets {
-  public static getDefaultImage():HTMLImageElement {
+  public static getDefaultImage(): HTMLImageElement {
     const image: HTMLImageElement = document.querySelector("img#asset_default");
     if (image == null) {
       throw Error("No assets found");
@@ -7,17 +7,24 @@ export class Assets {
     return image;
   }
 
-  public static getPlayerImage():HTMLImageElement {
-  const image : HTMLImageElement = document.querySelector("img#asset_player");
-  if(image == null) {
-    throw Error("No assets found");
+  public static getPlayerImage(): HTMLImageElement {
+    const image: HTMLImageElement = document.querySelector("img#asset_player");
+    if (image == null) {
+      throw Error("No assets found");
+    }
+    return image;
   }
-  return image;
-  }
-public static getAlienImage() : HTMLImageElement{
+  public static getAlienImage(): HTMLImageElement {
     const image: HTMLImageElement = document.querySelector("img#asset_alien");
-    if(image == null) throw Error("No alien asset found");
+    if (image == null) throw Error("No alien asset found");
 
     return image;
-}
+  }
+  
+  public static getStarImage(): HTMLImageElement {
+    const image: HTMLImageElement = document.querySelector("img#asset_star");
+    if (image == null) throw Error("No star asset found");
+
+    return image;
+  }
 }

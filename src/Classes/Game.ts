@@ -2,6 +2,8 @@ import { GameObject } from "./GameObject/GameObject.js"; // Importation de la cl
 import { Player } from "./GameObject/Player.js"; // Importation de la classe Player depuis son fichier
 import { Input } from "./Input.js"; // Importation du module Input pour gérer les entrées utilisateur
 import { Alien } from "./GameObject/Alien.js"; // Importation de la classe Alien depuis son fichier
+// import { Assets } from "./Assets.js";
+import { Star } from "./GameObject/Star.js";
 
 export class Game {
   // Déclaration d'une classe exportable nommée Game
@@ -13,10 +15,13 @@ export class Game {
   private player: Player; // Variable pour stocker l'instance du joueur
   private alien: Alien; // Variable pour stocker une instance d'alien (utilisée ici pour un alien générique)
   private nbAliens: number = 10; // Nombre d'aliens à instancier
-  
+  private star: Star; // Nombre de star a instancier;
+  private nbStars: number = 100;
+ 
+
   // Tableaux
   private gameObject: GameObject[] = []; // Tableau contenant tous les objets de type GameObject du jeu
-  
+
   // Constructeur appelé lors de la création d'une nouvelle instance de Game
   constructor() {
     const canvas: HTMLCanvasElement = document.querySelector("canvas"); // Sélectionne l'élément <canvas> dans le DOM
@@ -27,11 +32,11 @@ export class Game {
 
   public start(): void {
     // Méthode pour initialiser le dessin et démarrer le jeu
-    
+
     this.context.clearRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT); // Efface toute la zone du canvas (nettoyage initial)
     this.context.fillStyle = "#141414"; // Définit la couleur de remplissage (gris foncé)
     this.context.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT); // Remplit tout le canvas avec la couleur définie
-    
+
     const gameObject = new GameObject(this); // Création d'un objet générique du jeu
     this.player = new Player(this); // Création de l'objet joueur
 
@@ -41,12 +46,18 @@ export class Game {
     this.loop(); // Lance la boucle principale du jeu (mise à jour & dessin en continu)
     this.alien = new Alien(this); // Création d'un objet alien générique
     this.draw(this.alien); // Dessine l'alien créé
+    this.star = new Star(this); // Création d'un objet star générique
+    this.draw(this.star); // Dessine la star créé
 
     this.instanciate(this.player); // Ajoute le joueur au tableau des objets du jeu
 
     // Boucle pour instancier et ajouter plusieurs aliens au jeu
     for (let i = 0; i < this.nbAliens; i++) {
       this.instanciate(new Alien(this)); // Crée un nouvel alien et l'ajoute au tableau gameObject
+    }
+
+    for (let i = 0; i < this.nbStars; i++) {
+      this.instanciate(new Star(this));
     }
   }
 
@@ -81,6 +92,9 @@ export class Game {
 
       this.alien.callUpdate(); // Met à jour la logique d'un alien générique
       this.draw(this.alien); // Dessine cet alien
+
+      this.star.callUpdate(); // Met à jour la logique d'une star générique
+      this.draw(this.star);
 
       // Met à jour et dessine tous les autres objets stockés dans gameObject
       this.gameObject.forEach((go) => {
