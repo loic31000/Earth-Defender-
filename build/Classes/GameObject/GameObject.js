@@ -9,6 +9,32 @@ var GameObject = /** @class */ (function () {
         this.game = game; // Stocke la référence au jeu principal transmis au constructeur
         this.start(); // Appelle la méthode start pour initialiser l'objet (peut être redéfinie par héritage)
     }
+    GameObject.prototype.overlap = function (other) {
+        // La condition pour vérifier si les objets ne se chevauchent pas :
+        if (this.right() < other.left() || // cet objet est complètement à gauche de l'autre
+            this.left() > other.right() || // cet objet est complètement à droite de l'autre
+            this.bottom() < other.top() || // cet objet est complètement au-dessus de l'autre
+            this.top() > other.bottom() // cet objet est complètement en dessous de l'autre
+        ) {
+            // Si une de ces conditions est vraie, il n'y a pas chevauchement
+            return false;
+        }
+        // Sinon, il y a chevauchement
+        return true;
+    };
+    /** Méthodes utilitaires pour la position du GameObject */
+    GameObject.prototype.top = function () {
+        return this.position.y;
+    };
+    GameObject.prototype.bottom = function () {
+        return this.position.y + this.image.height;
+    };
+    GameObject.prototype.left = function () {
+        return this.position.x;
+    };
+    GameObject.prototype.right = function () {
+        return this.position.x + this.image.width;
+    };
     // Méthode publique pour récupérer l'image associée à cet objet
     GameObject.prototype.getImage = function () {
         return this.image;
@@ -33,6 +59,10 @@ var GameObject = /** @class */ (function () {
     GameObject.prototype.start = function () { };
     // Méthode protégée appelée à chaque mise à jour du jeu, à surcharger pour définir le comportement de l'objet
     GameObject.prototype.update = function () { };
+    GameObject.prototype.collide = function (other) { };
+    GameObject.prototype.callCollide = function (other) {
+        this.collide(other);
+    };
     // Méthode publique pour appeler la méthode update (permet de contrôler l'accès à la mise à jour)
     GameObject.prototype.callUpdate = function () {
         this.update();

@@ -17,7 +17,6 @@ export class Game {
   private nbAliens: number = 10; // Nombre d'aliens à instancier
   private star: Star; // Nombre de star a instancier;
   private nbStars: number = 100;
- 
 
   // Tableaux
   private gameObject: GameObject[] = []; // Tableau contenant tous les objets de type GameObject du jeu
@@ -77,6 +76,10 @@ export class Game {
     );
   }
 
+  public over() : void{
+      alert("GameOver!")
+      window.location.reload();
+  }
   // Boucle principale du jeu, exécutée toutes les 10 millisecondes
   private loop() {
     setInterval(() => {
@@ -96,11 +99,23 @@ export class Game {
       this.star.callUpdate(); // Met à jour la logique d'une star générique
       this.draw(this.star);
 
-      // Met à jour et dessine tous les autres objets stockés dans gameObject
-      this.gameObject.forEach((go) => {
-        go.callUpdate(); // Mise à jour de chaque objet
-        this.draw(go); // Dessin de chaque objet sur le canvas
-      });
-    }, 10); // Intervalle de 10 millisecondes entre chaque frame (environ 100 FPS)
+        this.gameObject.forEach(go=>{
+            go.callUpdate();
+            this.draw(go);
+            
+
+
+
+            this.gameObject.forEach(other=>{
+                // +
+                // Si le gameObject chevauche un gameObject qui n'est pas lui-même
+                if(other != go && go.overlap(other)){
+                    console.log("Deux GameObject différents se touchent");
+                    go.callCollide(other); // J'appelle la méthode collide de mon GameObject
+                }
+            })
+        })
+    },10); 
   }
 }
+

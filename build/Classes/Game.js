@@ -55,6 +55,10 @@ var Game = /** @class */ (function () {
         gameObject.getImage().height // Hauteur de l'image à dessiner
         );
     };
+    Game.prototype.over = function () {
+        alert("GameOver!");
+        window.location.reload();
+    };
     // Boucle principale du jeu, exécutée toutes les 10 millisecondes
     Game.prototype.loop = function () {
         var _this = this;
@@ -70,12 +74,19 @@ var Game = /** @class */ (function () {
             _this.draw(_this.alien); // Dessine cet alien
             _this.star.callUpdate(); // Met à jour la logique d'une star générique
             _this.draw(_this.star);
-            // Met à jour et dessine tous les autres objets stockés dans gameObject
             _this.gameObject.forEach(function (go) {
-                go.callUpdate(); // Mise à jour de chaque objet
-                _this.draw(go); // Dessin de chaque objet sur le canvas
+                go.callUpdate();
+                _this.draw(go);
+                _this.gameObject.forEach(function (other) {
+                    // +
+                    // Si le gameObject chevauche un gameObject qui n'est pas lui-même
+                    if (other != go && go.overlap(other)) {
+                        console.log("Deux GameObject différents se touchent");
+                        go.callCollide(other); // J'appelle la méthode collide de mon GameObject
+                    }
+                });
             });
-        }, 10); // Intervalle de 10 millisecondes entre chaque frame (environ 100 FPS)
+        }, 10);
     };
     return Game;
 }());
