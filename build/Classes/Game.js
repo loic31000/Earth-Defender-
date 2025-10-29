@@ -4,6 +4,7 @@ import { Input } from "./Input.js"; // Importe le module Input pour gérer les e
 import { Alien } from "./GameObject/Alien.js"; // Importe la classe Alien (héritée de GameObject)
 // import { Assets } from "./Assets.js";
 import { Star } from "./GameObject/Star.js"; // Importe la classe Star (héritée de GameObject)
+import { Earth } from "./GameObject/Earth.js";
 var Game = /** @class */ (function () {
     // Constructeur de la classe Game
     function Game() {
@@ -34,6 +35,9 @@ var Game = /** @class */ (function () {
         this.draw(this.alien); // Dessine l'alien
         this.star = new Star(this); // Crée une star générique
         this.draw(this.star); // Dessine la star
+        this.earth = new Earth(this);
+        this.draw(this.earth);
+        this.instanciate(this.earth);
         this.instanciate(this.player); // Ajoute le joueur au tableau des GameObjects
         // Ajoute plusieurs aliens dans le tableau via une boucle
         for (var i = 0; i < this.nbAliens; i++) {
@@ -44,18 +48,26 @@ var Game = /** @class */ (function () {
             this.instanciate(new Star(this)); // Crée et ajoute une star
         }
     };
+    // Méthode publique pour récupérer l'instance du joueur
+    Game.prototype.getPlayer = function () {
+        return this.player;
+    };
+    Game.prototype.getEarth = function () {
+        return this.earth;
+    };
+    // Supprimer gameObject du tableau de gameObjects
+    Game.prototype.destroy = function (gameObject) {
+        this.gameObject = this.gameObject.filter(function (go) { return go != gameObject; }); // Filtre et enlève l'objet spécifié
+    };
     // Méthode publique pour ajouter un GameObject au tableau gameObject
     Game.prototype.instanciate = function (gameObject) {
         this.gameObject.push(gameObject); // Ajoute le GameObject au tableau
     };
     // Méthode privée pour dessiner un GameObject sur le canvas
     Game.prototype.draw = function (gameObject) {
-        this.context.drawImage(gameObject.getImage(), // Récupère l'image associée au GameObject
-        gameObject.getPosition().x, // Coordonnée x où dessiner
-        gameObject.getPosition().y, // Coordonnée y où dessiner
-        gameObject.getImage().width, // Largeur de l'image
-        gameObject.getImage().height // Hauteur de l'image
-        );
+        if (!gameObject)
+            return; // Ne dessine rien si l'objet est undefined
+        this.context.drawImage(gameObject.getImage(), gameObject.getPosition().x, gameObject.getPosition().y, gameObject.getImage().width, gameObject.getImage().height);
     };
     // Méthode publique qui affiche une alerte "GameOver" et recharge la page
     Game.prototype.over = function () {
@@ -77,6 +89,8 @@ var Game = /** @class */ (function () {
             _this.draw(_this.alien); // Dessine l'alien
             _this.star.callUpdate(); // Met à jour la logique de la star générique
             _this.draw(_this.star); // Dessine la star
+            // this.earth.callUpdate();
+            _this.draw(_this.earth);
             // Pour chaque GameObject dans gameObject
             _this.gameObject.forEach(function (go) {
                 go.callUpdate(); // Mise à jour de son état / position

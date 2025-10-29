@@ -3,10 +3,9 @@ export class Assets {
     // Méthode statique qui récupère l'image par défaut du DOM avec l'id 'asset_default'
     const image: HTMLImageElement = document.querySelector("img#asset_default");
     if (image == null) {
-      // Si aucune image n'est trouvée, lève une erreur
       throw Error("No assets found");
     }
-    return image; // Retourne l'image récupérée
+    return image;
   }
 
   public static getPlayerImage(): HTMLImageElement {
@@ -29,6 +28,18 @@ export class Assets {
     // Méthode statique qui récupère l'image de l'étoile avec l'id 'asset_star'
     const image: HTMLImageElement = document.querySelector("img#asset_star");
     if (image == null) throw Error("No star asset found");
+    return image;
+  }
+
+  public static getLaserImage(): HTMLImageElement {
+    const image :HTMLImageElement = document.querySelector("img#asset_laser");
+    if (image == null) throw Error("No laser asset found");
+    return image;
+  }
+
+  public static getEarthImage(): HTMLImageElement {
+    const image : HTMLImageElement = document.querySelector("img#asset_earth");
+    if (image == null) throw Error("No earth asset found");
     return image;
   }
 }

@@ -5,10 +5,9 @@ var Assets = /** @class */ (function () {
         // Méthode statique qui récupère l'image par défaut du DOM avec l'id 'asset_default'
         var image = document.querySelector("img#asset_default");
         if (image == null) {
-            // Si aucune image n'est trouvée, lève une erreur
             throw Error("No assets found");
         }
-        return image; // Retourne l'image récupérée
+        return image;
     };
     Assets.getPlayerImage = function () {
         // Méthode statique qui récupère l'image du joueur avec l'id 'asset_player'
@@ -30,6 +29,18 @@ var Assets = /** @class */ (function () {
         var image = document.querySelector("img#asset_star");
         if (image == null)
             throw Error("No star asset found");
+        return image;
+    };
+    Assets.getLaserImage = function () {
+        var image = document.querySelector("img#asset_laser");
+        if (image == null)
+            throw Error("No laser asset found");
+        return image;
+    };
+    Assets.getEarthImage = function () {
+        var image = document.querySelector("img#asset_earth");
+        if (image == null)
+            throw Error("No earth asset found");
         return image;
     };
     return Assets;

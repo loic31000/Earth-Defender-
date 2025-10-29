@@ -77,10 +77,10 @@ export class GameObject {
   // Méthode protégée appelée à chaque mise à jour du jeu, à surcharger selon le comportement voulu
   protected update(): void {}
 
-  // Méthode protégée prévue pour gérer la collision entre ce GameObject et un autre (à implémenter)
+  // Méthode protégée prévue pour gérer la collision entre ce GameObject et un autre 
   protected collide(other: GameObject) {}
 
-  // Méthode publique permettant d'appeler la méthode protégée collide (contrôle d’accès)
+  // Méthode publique permettant d'appeler la méthode protégée collide 
   public callCollide(other: GameObject): void {
     this.collide(other);
   }

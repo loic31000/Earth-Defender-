@@ -4,6 +4,7 @@ import { Input } from "./Input.js"; // Importe le module Input pour gérer les e
 import { Alien } from "./GameObject/Alien.js"; // Importe la classe Alien (héritée de GameObject)
 // import { Assets } from "./Assets.js";
 import { Star } from "./GameObject/Star.js"; // Importe la classe Star (héritée de GameObject)
+import { Earth } from "./GameObject/Earth.js";
 
 export class Game {
   // Déclaration de la classe principale Game
@@ -17,6 +18,11 @@ export class Game {
   private nbAliens: number = 10; // Nombre d’aliens à créer dans le jeu
   private star: Star; // Instance d'une star générique
   private nbStars: number = 100; // Nombre de stars à créer
+
+
+  private earth: Earth;
+
+
 
   // Tableau pour stocker tous les GameObjects du jeu
   private gameObject: GameObject[] = [];
@@ -43,11 +49,18 @@ export class Game {
     this.draw(this.player); // Dessine le joueur
     Input.listen(); // Active la gestion des entrées clavier / souris
     this.loop(); // Lance la boucle principale du jeu (mise à jour et dessin répétés)
-    
+
     this.alien = new Alien(this); // Crée un alien générique
     this.draw(this.alien); // Dessine l'alien
     this.star = new Star(this); // Crée une star générique
     this.draw(this.star); // Dessine la star
+
+
+
+    this.earth = new Earth(this);
+    this.draw(this.earth);
+    this.instanciate(this.earth);
+
 
     this.instanciate(this.player); // Ajoute le joueur au tableau des GameObjects
 
@@ -62,26 +75,42 @@ export class Game {
     }
   }
 
+  // Méthode publique pour récupérer l'instance du joueur
+  public getPlayer(): Player {
+    return this.player;
+  }
+
+  public getEarth(): Earth {
+    return this.earth;
+  }
+
+  // Supprimer gameObject du tableau de gameObjects
+  public destroy(gameObject: GameObject): void {
+    this.gameObject = this.gameObject.filter((go) => go != gameObject); // Filtre et enlève l'objet spécifié
+  }
+
   // Méthode publique pour ajouter un GameObject au tableau gameObject
   public instanciate(gameObject: GameObject): void {
     this.gameObject.push(gameObject); // Ajoute le GameObject au tableau
   }
 
   // Méthode privée pour dessiner un GameObject sur le canvas
-  private draw(gameObject: GameObject) {
-    this.context.drawImage(
-      gameObject.getImage(), // Récupère l'image associée au GameObject
-      gameObject.getPosition().x, // Coordonnée x où dessiner
-      gameObject.getPosition().y, // Coordonnée y où dessiner
-      gameObject.getImage().width, // Largeur de l'image
-      gameObject.getImage().height // Hauteur de l'image
-    );
-  }
+private draw(gameObject: GameObject) {
+  if (!gameObject) return; // Ne dessine rien si l'objet est undefined
+  this.context.drawImage(
+    gameObject.getImage(),
+    gameObject.getPosition().x,
+    gameObject.getPosition().y,
+    gameObject.getImage().width,
+    gameObject.getImage().height
+  );
+}
+
 
   // Méthode publique qui affiche une alerte "GameOver" et recharge la page
   public over(): void {
-      alert("GameOver!"); // Affiche un message à l'utilisateur
-      window.location.reload(); // Recharge la page web pour redémarrer le jeu
+    alert("GameOver!"); // Affiche un message à l'utilisateur
+    window.location.reload(); // Recharge la page web pour redémarrer le jeu
   }
 
   // Boucle principale du jeu appelée toutes les 10 millisecondes (~100 fois par seconde)
@@ -103,13 +132,19 @@ export class Game {
       this.star.callUpdate(); // Met à jour la logique de la star générique
       this.draw(this.star); // Dessine la star
 
+      // this.earth.callUpdate();
+      this.draw(this.earth);
+
+
+
+
       // Pour chaque GameObject dans gameObject
-      this.gameObject.forEach(go => {
+      this.gameObject.forEach((go) => {
         go.callUpdate(); // Mise à jour de son état / position
         this.draw(go); // Dessine l'objet après mise à jour
 
         // Pour chaque autre GameObject, teste si ils se chevauchent et ne sont pas le même objet
-        this.gameObject.forEach(other => {
+        this.gameObject.forEach((other) => {
           if (other != go && go.overlap(other)) {
             console.log("Deux GameObject différents se touchent"); // Message debug
             go.callCollide(other); // Appelle la méthode de collision du GameObject

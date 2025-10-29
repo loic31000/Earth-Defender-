@@ -57,9 +57,9 @@ var GameObject = /** @class */ (function () {
     GameObject.prototype.start = function () { };
     // Méthode protégée appelée à chaque mise à jour du jeu, à surcharger selon le comportement voulu
     GameObject.prototype.update = function () { };
-    // Méthode protégée prévue pour gérer la collision entre ce GameObject et un autre (à implémenter)
+    // Méthode protégée prévue pour gérer la collision entre ce GameObject et un autre 
     GameObject.prototype.collide = function (other) { };
-    // Méthode publique permettant d'appeler la méthode protégée collide (contrôle d’accès)
+    // Méthode publique permettant d'appeler la méthode protégée collide 
     GameObject.prototype.callCollide = function (other) {
         this.collide(other);
     };
