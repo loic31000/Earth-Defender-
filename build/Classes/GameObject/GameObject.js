@@ -1,69 +1,79 @@
-import { Assets } from "../Assets.js"; // Importation du module Assets pour récupérer les images et ressources
+import { Assets } from "../Assets.js";
+// Import de la classe principale Game pour référencer le jeu courant
 var GameObject = /** @class */ (function () {
+    // Référence à l’instance du jeu principal, pour accéder aux propriétés globales (canvas, etc.)
     function GameObject(game) {
         this.position = {
             x: 0,
             y: 0,
-        }; // Initialise la position de l'objet aux coordonnées (0, 0)
-        this.image = Assets.getDefaultImage(); // Affecte une image par défaut tirée du gestionnaire d’Assets
-        this.game = game; // Stocke la référence au jeu principal passé au constructeur
-        this.start(); // Appelle la méthode start, prévue pour initialiser objet et à redéfinir dans les classes héritées
+        };
+        // Initialise la position à (0,0) par défaut
+        this.image = Assets.getDefaultImage();
+        // Affecte une image par défaut provenant du gestionnaire d’Assets
+        this.game = game;
+        // Stocke la référence à l’objet du jeu pour interaction globale
+        this.start();
+        // Appelle la méthode start, à redéfinir par héritage pour initialiser l’objet après création
     }
+    // Méthode pour détecter le chevauchement (collision) avec un autre objet "other" en testant les côtés
     GameObject.prototype.overlap = function (other) {
-        // Vérifie si cet objet ne se chevauche pas avec un autre GameObject "other" en testant les côtés
-        if (this.right() < other.left() || // Cet objet est entièrement à gauche de l'autre (pas de chevauchement horizontal)
-            this.left() > other.right() || // Cet objet est entièrement à droite de l'autre (pas de chevauchement horizontal)
-            this.bottom() < other.top() || // Cet objet est totalement au-dessus de l'autre (pas de chevauchement vertical)
-            this.top() > other.bottom() // Cet objet est totalement en dessous de l'autre (pas de chevauchement vertical)
+        if (this.right() < other.left() || // Cet objet est complètement à gauche de l'autre
+            this.left() > other.right() || // Cet objet est complètement à droite de l'autre
+            this.bottom() < other.top() || // Cet objet est complètement au-dessus de l'autre
+            this.top() > other.bottom() // Cet objet est complètement en dessous de l'autre
         ) {
-            return false; // Si une de ces conditions est vraie, aucun chevauchement n'a lieu
+            return false; // Si une de ces conditions est vraie, pas de chevauchement
         }
-        return true; // Sinon, les objets se chevauchent
+        return true; // Sinon, il y a collision (chevauchement)
     };
-    /** Méthodes utilitaires pour obtenir les bords du GameObject */
+    /** Méthodes utiles pour obtenir les bords de l’objet selon sa position et dimension */
     GameObject.prototype.top = function () {
-        return this.position.y; // Retourne la coordonnée y en haut de l'objet
+        return this.position.y;
+        // Coordonnée y du bord supérieur de l'objet
     };
     GameObject.prototype.bottom = function () {
-        return this.position.y + this.image.height; // Coordonnée y en bas, calculée avec la hauteur de l'image
+        return this.position.y + this.image.height;
+        // Coordonnée y du bord inférieur, calculée via la hauteur de l’image
     };
     GameObject.prototype.left = function () {
-        return this.position.x; // Coordonnée x à gauche de l'objet
+        return this.position.x;
+        // Coordonnée x du bord gauche
     };
     GameObject.prototype.right = function () {
-        return this.position.x + this.image.width; // Coordonnée x à droite, calculée avec la largeur de l'image
+        return this.position.x + this.image.width;
+        // Coordonnée x du bord droit, via la largeur de l’image
     };
-    // Méthode publique pour obtenir l'image affichée de cet objet
+    // Accesseur pour récupérer l'image affichée par cet objet
     GameObject.prototype.getImage = function () {
         return this.image;
     };
-    // Méthode publique pour obtenir la position actuelle de l'objet
+    // Accesseur pour récupérer la position actuelle (objet {x,y})
     GameObject.prototype.getPosition = function () {
         return this.position;
     };
-    // Méthode publique pour récupérer la référence au jeu principal
+    // Retourne la référence à l’objet Game (jeu principal)
     GameObject.prototype.getGame = function () {
         return this.game;
     };
-    // Méthode publique pour modifier l'image affichée de l'objet
+    // Méthode pour modifier l’image affichée (changer le sprite)
     GameObject.prototype.setImage = function (image) {
         this.image = image;
     };
-    // Méthode publique pour changer la position de l'objet
+    // Méthode pour changer la position de l’objet (mise à jour des coordonnées)
     GameObject.prototype.setPosition = function (position) {
         this.position = position;
     };
-    // Méthode protégée appelée lors de l'initialisation, prévue pour être redéfinie dans les classes filles
+    // Méthode destinée à être redéfinie dans les classes filles pour initialiser l’objet
     GameObject.prototype.start = function () { };
-    // Méthode protégée appelée à chaque mise à jour du jeu, à surcharger selon le comportement voulu
+    // Méthode destinée à être redéfinie pour mettre à jour la logique de l’objet à chaque frame
     GameObject.prototype.update = function () { };
-    // Méthode protégée prévue pour gérer la collision entre ce GameObject et un autre 
+    // Méthode destinée à gérer les effets de collision avec un autre objet, à redéfinir dans les héritages
     GameObject.prototype.collide = function (other) { };
-    // Méthode publique permettant d'appeler la méthode protégée collide 
+    // Méthode publique exposée appelant la méthode protégée collide (pour gestion des collisions)
     GameObject.prototype.callCollide = function (other) {
         this.collide(other);
     };
-    // Méthode publique permettant d'appeler la méthode update (contrôle d’accès)
+    // Méthode publique exposée appelant la méthode protégée update (mise à jour logique)
     GameObject.prototype.callUpdate = function () {
         this.update();
     };
