@@ -153,7 +153,7 @@ export class Game {
       this.aliensKilled++; // Incrémenter le compteur de monstres tués
 
       // À chaque 10 aliens tués, on réduit le délai d’apparition pour augmenter la difficulté
-      if (this.aliensKilled % 10 === 0 && this.alienSpawnInterval > 500) {
+      if (this.aliensKilled % 5 === 0 && this.alienSpawnInterval > 500) {
         this.alienSpawnInterval -= 300; // Diminuer l’intervalle (plus d’aliens apparaissent rapidement)
         console.log("Nouveau rythme d'apparition :", this.alienSpawnInterval, "ms");
       }

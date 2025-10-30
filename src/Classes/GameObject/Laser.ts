@@ -19,6 +19,7 @@ export class Laser extends GameObject {
       y: this.getGame().getPlayer().getPosition().y - this.getImage().height,
     });
   }
+  
 
   protected update(): void {
     // Mise à jour effectuée à chaque frame pour déplacer le laser vers le haut
